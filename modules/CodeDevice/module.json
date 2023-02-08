@@ -68,7 +68,7 @@
 				"dependencies": "deviceType"
 			},
 			"getterPollInterval_sensorBinary": {
-				"type": "integer",
+				"type": "string",
 				"required": false,
 				"dependencies": "deviceType"
 			},
