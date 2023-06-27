@@ -6,7 +6,7 @@
 	"homepage": "http://razberry.z-wave.me",
 	"icon": "icon.png",
 	"moduleName": "HTTPDevice",
-	"version": "2.2.1",
+	"version": "2.2.2",
 	"maturity": "stable",
 	"repository": {
 		"type": "git",
@@ -44,7 +44,9 @@
 		"updateOnAction": false,
 		"skipEventIfSameValue": false,
 		"login":"",
-		"password":""
+		"password":"",
+		"maxAttempts": 3,
+		"PollIntervalTimeout": 240
 	},
 	"schema": {
 		"type": "object",
@@ -202,7 +204,17 @@
 				"format": "password",
 				"type": "string",
 				"required": false
+			},
+			"maxAttempts": {
+				"type": "integer",
+				"required": true
+			},
+			"PollIntervalTimeout": {
+				"type": "integer",
+				"required": true
 			}
+
+
 		}
 	},
 	"options": {
@@ -403,6 +415,16 @@
 			"password": {
 				"label": "__l_password__",
 				"helper": "__h_password__"
+			},
+
+			"maxAttempts": {
+				"label": "__l_maxAttempts__",
+				"helper": "__h_maxAttempts__"
+			},
+
+			"PollIntervalTimeout": {
+				"label": "__l_PollIntervalTimeout__",
+				"helper": "__h_PollIntervalTimeout__"
 			}
 		}
 	}

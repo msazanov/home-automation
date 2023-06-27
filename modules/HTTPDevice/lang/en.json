@@ -37,5 +37,9 @@
 	"l_login":"Login",
 	"h_login":"If needed, set login",
 	"l_password":"Pasword",
-	"h_password":"If needed, set password"
+	"h_password":"If needed, set password",
+	"l_maxAttempts": "Max Attempts",
+    	"h_maxAttempts": "The maximum number of attempts before the device is considered dead.",
+	"l_PollIntervalTimeout": "Poll Interval Timeout",
+    	"h_PollIntervalTimeout": "The interval in seconds for polling the device when it is considered dead."
 }

@@ -1,6 +1,6 @@
 /*** HTTPDevice Z-Way HA module *******************************************
 
-Version: 2.2.1
+Version: 2.2.2
 (c) Z-Wave.Me, 2020
 -----------------------------------------------------------------------------
 Author: Poltorak Serguei <ps@z-wave.me>, Yurkin Vitaliy <aivs@z-wave.me>
@@ -104,11 +104,11 @@ HTTPDevice.prototype.init = function (config) {
 		},
 		moduleId: this.id
 	});
-	
-	if (vDev && this.config["getter_" + deviceType] && this.config["getterPollInterval_" + deviceType]) {
-		this.timer = setInterval(function() {
-			self.update(vDev);
-		}, this.config["getterPollInterval_" + deviceType] * 1000);
+	self.failedAttempts = 0;
+	self.originalPollInterval = this.config["getterPollInterval_" + deviceType];
+
+	if (vDev && this.config["getter_" + deviceType]) {
+		self.update(vDev);
 	}
 };
 
@@ -162,9 +162,25 @@ HTTPDevice.prototype.update = function (vDev) {
 				if (data !== null && (self.config.skipEventIfSameValue !== true || data !== vDev.get("metrics:level"))) {
 					vDev.set("metrics:level", data);
 				}
+				self.failedAttempts = 0;
+				if (vDev.get("metrics:isFailed")) {
+					vDev.set("metrics:isFailed", false);
+					self.addNotification("info", "Device " + vDev.get("metrics:title") + " is now alive.", "module");
+				}
+				self.setPollInterval(vDev, self.config["getterPollInterval_" + deviceType]);
 			},
 			error: function(response) {
 				self.log("Can not make request: " + response.statusText + " " + url);
+				// Increment failed attempts on failed response
+				self.failedAttempts++;
+				// Check if failed attempts exceed max attempts
+				if (self.failedAttempts >= self.config.maxAttempts) {
+					if (!vDev.get("metrics:isFailed")) {
+						vDev.set("metrics:isFailed", true);
+						self.addNotification("error", "Device " + vDev.get("metrics:title") + " is now dead.", "module");
+		    			}
+					self.setPollInterval(vDev, self.config.pollIntervalTimeout);
+				}
 			} 
 		};
 
@@ -203,6 +219,18 @@ HTTPDevice.prototype.update = function (vDev) {
 		}
 		http.request(req);
 	}
+};
+
+HTTPDevice.prototype.setPollInterval = function (vDev, interval) {
+	var self = this;
+	// Stop the current timer
+	if (this.timer) {
+		clearInterval(this.timer);
+	}
+	// Set a new timer with an updated polling interval
+	this.timer = setInterval(function() {
+		self.update(vDev);
+	}, interval * 1000);
 };
 
 HTTPDevice.prototype.act = function (vDev, action, subst, selfValue) {
