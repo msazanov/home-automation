@@ -45,7 +45,7 @@
 			},
 			"iconSensorBinary": {
 				"type": "string",
-				"enum": ["alarm", "motion", "smoke", "co", "flood","cooling","tamper","door"],
+				"enum": ["alarm", "motion", "smoke", "co", "alarm_flood","cooling","tamper","door"],
 				"default": "alarm", 
 				"required": true,
 				"dependencies": "deviceType"
