@@ -59,7 +59,7 @@ DummyDevice.prototype.init = function (config) {
 		case "doorlock":
 			deviceType = "doorlock";
 			probeType = "";
-			icon = "door";
+			icon = "lock";
 			level = lastLevel || "close";
 			break;
 		case "switchMultilevel":
